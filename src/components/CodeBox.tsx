@@ -1,5 +1,4 @@
 "use client"
-
 import styles from "./css/terminal.module.css"
 import { Terminalfunc } from "./Terminalfunc"
 import { useEffect, useState } from "react"
@@ -9,7 +8,6 @@ export const Codebox = () => {
     const [operation, setOperation] = useState<string>('');
     const [rip, setRip] = useState<string>('');
     const [ripList, setRipList] = useState<string[]>([]);
-    
 
     function Clear(){
         setOperation("");
@@ -60,7 +58,7 @@ export const Codebox = () => {
         borderColor: 'text.primary',
         m: 1,
         border: 1,
-        style: { width: '60%', height: '10rem' },
+        style: { width: '60%', height: '12rem' },
     };
 
     return (
