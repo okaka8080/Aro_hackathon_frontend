@@ -1,0 +1,38 @@
+.main {}
+
+.area {
+    text-align: center;
+}
+.editortop {
+    font-size: 20px;
+    line-height: 30px;
+    color: whitesmoke;
+    padding: 0.5%;
+}
+
+
+.byte {
+    resize: none;
+    font-size: 15px;
+    line-height: 20px;
+    width: 10%;
+    height: 220px;
+    /*スクロールバー非表示（IE・Edge）*/
+    -ms-overflow-style: none;
+    /*スクロールバー非表示（Firefox）*/
+    scrollbar-width: none;
+
+}
+
+.byte::-webkit-scrollbar {
+    display: none;
+}
+
+
+.operation {
+    resize: none;
+    font-size: 15px;
+    line-height: 20px;
+    width: 80%;
+    height: 220px;
+}
