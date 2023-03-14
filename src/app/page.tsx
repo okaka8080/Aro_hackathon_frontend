@@ -5,6 +5,7 @@ import { Codebox } from '@/components/CodeBox'
 import { Box } from '@mui/system'
 const inter = Inter({ subsets: ['latin'] })
 
+
 export default function Main() {
   return (
     <main>
