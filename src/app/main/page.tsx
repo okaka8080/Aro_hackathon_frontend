@@ -2,17 +2,21 @@
 
 import { Inter } from 'next/font/google'
 import { Codebox } from '@/components/CodeBox'
-import styles from './page.module.css'
 import { Box } from '@mui/system'
+
+import Cookies from 'js-cookie'
+import Auth from '@/components/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Top() {
+export default function Main() {
   return (
     <main>
-      <Box>
-        <Codebox />
-      </Box>
+      <Auth>
+        <Box>
+          <Codebox />
+        </Box>
+      </Auth>
     </main>
   )
 }

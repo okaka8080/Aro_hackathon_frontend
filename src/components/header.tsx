@@ -9,11 +9,27 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
+import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export const Header = () => {
-    const settings = ['Theme', 'FontSize', 'Logout'];
+    const router = useRouter();
+    const [isLogin, setIsLogin] = useState<boolean>();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const logout = () => {
+        Cookies.remove("signedIn");
+        router.replace("/login");
+    }
+    useEffect(() => {
+        if (Cookies.get("signedIn") == "true") {
+            setIsLogin(true);
+        } else {
+            setIsLogin(false);
+        }
+    });
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -37,9 +53,10 @@ export const Header = () => {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         WASM
                     </Typography>
-                    <Link href="/login" style={{ color: 'white' }}>
+                    {!isLogin && <Link href="/login" style={{ color: 'white' }}>
                         <Button color="inherit">Login</Button>
-                    </Link>
+                    </Link>}
+
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -62,13 +79,18 @@ export const Header = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
+
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center">Theme</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center">FontSize</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={logout}>
+                                <Typography textAlign="center">Logout</Typography>
+                            </MenuItem>
                         </Menu>
-                        </Box>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </Box>

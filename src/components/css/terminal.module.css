@@ -6,17 +6,19 @@
 .editortop {
     font-size: 20px;
     line-height: 30px;
-    color: whitesmoke;
+    color: #696969;
     padding: 0.5%;
 }
 
 
 .byte {
+    outline:none;
     resize: none;
     font-size: 15px;
     line-height: 20px;
     width: 10%;
-    height: 220px;
+    height: 420px;
+    white-space: nowrap;
     /*スクロールバー非表示（IE・Edge）*/
     -ms-overflow-style: none;
     /*スクロールバー非表示（Firefox）*/
@@ -30,9 +32,15 @@
 
 
 .operation {
+    outline:none;
     resize: none;
     font-size: 15px;
     line-height: 20px;
     width: 80%;
-    height: 220px;
+    height: 420px;
+}
+
+.br::before {
+	content: "\A" ;
+	white-space: pre ;
 }
