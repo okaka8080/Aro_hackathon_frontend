@@ -76,6 +76,7 @@ export const Codebox = () => {
         if(postnimonics == null){
             postnimonics = [postnemonic];
         }
+        postnimonics = postnimonics.filter(Boolean);
 
         console.log(postnimonics)
         console.log(postregister)
