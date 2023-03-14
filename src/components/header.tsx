@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+
 export const Header = () => {
     const router = useRouter();
     const [isLogin, setIsLogin] = useState<boolean>();
@@ -48,49 +49,11 @@ export const Header = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" color="primary">
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        WASM
+                        WAZM
                     </Typography>
-                    {!isLogin && <Link href="/login" style={{ color: 'white' }}>
-                        <Button color="inherit">Login</Button>
-                    </Link>}
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <SettingsIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Theme</Typography>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">FontSize</Typography>
-                            </MenuItem>
-                            <MenuItem onClick={logout}>
-                                <Typography textAlign="center">Logout</Typography>
-                            </MenuItem>
-                        </Menu>
-                    </Box>
                 </Toolbar>
             </AppBar>
         </Box>
