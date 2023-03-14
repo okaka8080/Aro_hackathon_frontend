@@ -11,17 +11,31 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Login() {
+  const [name, setName] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const router = useRouter();
+
+  
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+  //ログイン処理（CookieにsignedIn=trueとする）
+  const APIlogin = () => {
+    Cookies.set("signedIn", "true");
+    router.replace("/main");
+  }
+
+
   return (
     <main>
       <Grid container alignItems='center' justifyContent='center' direction="column" >
@@ -32,6 +46,7 @@ export default function Login() {
           <TextField
             id="input-with-icon-textfield"
             label="name"
+            onChange={(e) => setName(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -48,6 +63,7 @@ export default function Login() {
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
+              onChange={(e) => setPassword(e.target.value)}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -65,10 +81,10 @@ export default function Login() {
           </FormControl>
         </div>
         <div style={{ padding: 30 }}>
-          <Button variant="contained">Start</Button>
+          <Button variant="contained" onClick={APIlogin}>Start</Button>
         </div>
         <div style={{ padding: 0 }}>
-          <Link href="/signin" style={{color:'white'}}>
+          <Link href="/signin" style={{ color: 'white' }}>
             <Button variant="contained">SignIn</Button>
           </Link>
         </div>

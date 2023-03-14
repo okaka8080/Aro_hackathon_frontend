@@ -12,18 +12,26 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Signin() {
   const [showPassword, setShowPassword] = React.useState(false);
-
+  const router = useRouter();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+
+  //ログイン処理（CookieにsignedIn=trueとする）
+  const APIlogin = () => {
+    Cookies.set("signedIn", "true");
+    router.replace("/Main");
+  }
+
   return (
     <main>
       <Grid container alignItems='center' justifyContent='center' direction="column" >
@@ -81,7 +89,7 @@ export default function Signin() {
           </FormControl>
         </div>
         <div style={{padding:30}}>
-          <Button variant="contained">Admin</Button>
+          <Button variant="contained" onClick={APIlogin}>Admin</Button>
         </div>
       </Grid>
     </main>
