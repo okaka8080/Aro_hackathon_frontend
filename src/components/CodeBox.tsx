@@ -73,6 +73,9 @@ export const Codebox = () => {
     async function PostALL(postnemonic: string, postregister: number[], postmemory: number[]) {
         const URL = baseurl + "/all"
         let postnimonics:string[] = postnemonic.split("\n");
+        if(postnimonics == null){
+            postnimonics = [postnemonic];
+        }
 
         console.log(postnimonics)
         console.log(postregister)
