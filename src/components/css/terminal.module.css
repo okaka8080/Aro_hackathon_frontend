@@ -1,4 +1,5 @@
-.main {}
+.main {
+}
 
 .area {
     text-align: center;
@@ -16,12 +17,8 @@
     resize: none;
     font-size: 15px;
     line-height: 20px;
-    width: 10%;
     height: 420px;
-    white-space: nowrap;
-    /*スクロールバー非表示（IE・Edge）*/
     -ms-overflow-style: none;
-    /*スクロールバー非表示（Firefox）*/
     scrollbar-width: none;
 
 }
@@ -36,11 +33,15 @@
     resize: none;
     font-size: 15px;
     line-height: 20px;
-    width: 80%;
     height: 420px;
 }
 
 .br::before {
 	content: "\A" ;
 	white-space: pre ;
+}
+
+.table{
+    table-layout: fixed;
+	width: 100%;
 }

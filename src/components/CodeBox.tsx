@@ -3,6 +3,7 @@ import styles from "./css/terminal.module.css"
 import { useEffect, useState } from "react"
 import { Box, Grid, Button } from "@mui/material"
 import axios from "axios"
+import { RichTextarea, CaretPosition } from "rich-textarea";
 
 
 export const Codebox = () => {
@@ -10,29 +11,11 @@ export const Codebox = () => {
     const [rip, setRip] = useState<string>('');
     const [registers, setRegisters] = useState<number[]>([]);
     const [memorys, setMemorys] = useState<number[]>([]);
-    const [memoryCol, setMemoryCol] = useState<string>();
     const [currentPos, setCurrentPos] = useState<number>(0);
-    const Operations = ["mov", "hoge"]
-    const registerName = [
-        "rax   "
-        , "rbx   "
-        , "rcx   "
-        , "rdx   "
-        , "rsp   "
-        , "rbp   "
-        , "rsi   "
-        , "rdi   "
-        , "r8    "
-        , "r9    "
-        , "r10   "
-        , "r11   "
-        , "r12   "
-        , "r13   "
-        , "r14   "
-        , "r15   "
-        , "rflags"
-        , "rip   "
-    ]
+    const [currentRow, setCurrentRow] = useState<number>(-10);
+    const [processing, setProcessing] = useState(false);
+    const [display, setDisplay] = useState<string>("");
+    const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
         memory: number[],
         register: number[],
@@ -42,9 +25,31 @@ export const Codebox = () => {
     const baseurl = "https://wazm.azurewebsites.net/asm";
 
     function Clear() {
+        setCurrentRow(-10);
         setOperation("");
         setRip("");
     }
+    function SerchRow(next: number) {
+        let rows = rip.split("\n");
+        let allopereation = operation.split("\n");
+        let fixrows = rows.filter(Boolean);
+        let fixoperation = allopereation.filter(Boolean);
+        for (let i = 0; i < rows.length; i++) {
+            if (Number(rows[i]) == next) {
+                setCurrentRow(i);
+            }
+        }
+        for (let i = 0; i < fixrows.length; i++) {
+            if (Number(fixrows[i]) == next) {
+                Post(fixoperation[i], registers, memorys);
+                return fixoperation[i];
+            }
+        }
+        return "not found";
+        setProcessing(false);
+    }
+
+
 
     async function Post(postnemonic: string, postregister: number[], postmemory: number[]) {
         console.log(postnemonic)
@@ -60,10 +65,21 @@ export const Codebox = () => {
                 console.log(res);
                 setResult(response.data);
                 if (response.data.isSuccess) {
-                    setMemorys(response.data.memory)
-                    setRegisters(response.data.register)
+                    let prevRip = registers[17];
+                    setMemorys(response.data.memory);
+                    setRegisters(response.data.register);
+                    setDisplay(response.data.display)
+                    // if (prevRip != response.data.register[17]) {
+                    //     SerchRow(response.data.register[17]);
+                    //     return
+                    // }
+                    console.log("breack")
+                    setCurrentRow(-10);
+                    setProcessing(false);
                 } else {
                     alert("実行時にエラーが生じました。");
+                    setProcessing(false);
+                    setCurrentRow(-10);
                 }
             });
         } catch (error) {
@@ -72,8 +88,8 @@ export const Codebox = () => {
     }
     async function PostALL(postnemonic: string, postregister: number[], postmemory: number[]) {
         const URL = baseurl + "/all"
-        let postnimonics:string[] = postnemonic.split("\n");
-        if(postnimonics == null){
+        let postnimonics: string[] = postnemonic.split("\n");
+        if (postnimonics == null) {
             postnimonics = [postnemonic];
         }
         postnimonics = postnimonics.filter(Boolean);
@@ -93,6 +109,7 @@ export const Codebox = () => {
                 if (response.data.isSuccess) {
                     setMemorys(response.data.memory)
                     setRegisters(response.data.register)
+                    setDisplay(response.data.display)
                 } else {
                     alert("実行時にエラーが生じました。");
                 }
@@ -103,7 +120,12 @@ export const Codebox = () => {
     }
 
     function LineExecution(num: number) {
+        if (processing) {
+            return;
+        }
+        setProcessing(true);
         var lines: string[] = operation.split(/\n/);
+        setCurrentRow(num);
         Post(lines[num], registers, memorys)
     }
 
@@ -112,16 +134,13 @@ export const Codebox = () => {
         var newOpereteList = operation.split(/\n/);
         var byteList: string[] = [];
         var bytes = "";
+        var newrows = 0;
         for (let i: number = 0; i < newOpereteList.length; i++) {
-            if (newOpereteList[i] == "") {
+            if (newOpereteList[i] == "" || newOpereteList[i] == "" ) {
                 bytes = bytes + "\n";
             } else {
-                var textArray = newOpereteList[i].split(/,|\s/)
-                if (Operations.indexOf(textArray[0]) > -1) {
-                    bytes = bytes + "exit\n";
-                } else {
-                    bytes = bytes + "undifined\n";
-                }
+                newrows++;
+                bytes = bytes + newrows.toString() + "\n";
             }
         }
         setRip(bytes);
@@ -129,7 +148,6 @@ export const Codebox = () => {
     }
 
     function GetCoursol() {
-        //const element: HTMLInputElement =<HTMLInputElement>document.getElementById();
         let area = document.getElementById("operate");
         let target = (area as HTMLInputElement);
         if (target != null) {
@@ -141,10 +159,8 @@ export const Codebox = () => {
                 return (colList.length - 1)
             }
         }
-
         return 0;
     }
-
 
     const changeInput = () => {
         InputByte(operation)
@@ -156,9 +172,10 @@ export const Codebox = () => {
     function Sumple() {
         console.log("loaded");
         const newRegister: number[] = [];
-        for (let l = 0; l < 18; l++) {
+        for (let l = 0; l < 17; l++) {
             newRegister.push(0);
         }
+        newRegister.push(1)
         const newMemorys: string[] = [];
         let newCols = "";
         let firstMemory: number[] = [];
@@ -187,8 +204,6 @@ export const Codebox = () => {
         Sumple();
     }, [])
 
-
-
     const defaultProps = {
         bgcolor: '#f5f5f5',
         borderColor: 'text.primary',
@@ -197,18 +212,25 @@ export const Codebox = () => {
         style: { width: '100%', height: '30rem' },
     };
     const RegisterProps = {
-        bgcolor: '#f5f5dc',
+        bgcolor: '#dcdcdc',
         borderColor: 'text.primary',
         m: 1,
         border: 1,
-        style: { width: '100%', height: '8rem' },
+        style: { width: '100%', height: '6rem' },
     };
     const MemoryProps = {
-        bgcolor: '#f5f5dc',
+        bgcolor: '#dcdcdc',
         borderColor: 'text.primary',
         m: 1,
         border: 1,
-        style: { width: '100%', height: '25rem' },
+        style: { width: '100%', height: '22rem' },
+    };
+    const DisplayProps = {
+        bgcolor: '#000000',
+        borderColor: 'text.primary',
+        m: 1,
+        border: 1,
+        style: { width: '100%', height: '6rem' },
     };
 
     return (
@@ -216,30 +238,42 @@ export const Codebox = () => {
             <div className={styles.main}>
                 <Grid container justifyContent='center'>
                     <Grid item xs={5}>
-                        <Box display="flex" justifyContent="center" sx={{ pt: 2, pb: 0 }}>
+                        <Box display="flex" justifyContent="center" sx={{ pt: 2, pb: 0 }} >
+                            <Box borderRadius={2} {...DisplayProps}>
+                                <div style={{ color: "white" }}>
+                                    ディスプレイ
+                                </div>
+                                <div style={{ color: "white", padding: "2%" }}>
+                                    {display}
+                                </div>
+                            </Box>
+                        </Box>
+                        <Box display="flex" justifyContent="center" sx={{ pt: 0.5, pb: 0 }}>
                             <Box borderRadius={2} {...RegisterProps} >
                                 <div style={{ paddingLeft: 5 }}>
                                     レジスタ状況
                                 </div>
-                                <Grid container justifyContent='center' direction="column" alignItems="center" style={{overflow: "auto"}}>
-
-                                    <div style={{ overflow: "auto" }}>
-                                        <div style={{ fontSize: 12, paddingTop: 20, whiteSpace: "nowrap" }}>
-                                            {registerName.map((value, index) => (
-                                                <span style={{ padding: 3 }} key={index} >
-                                                    {value}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <div style={{ fontSize: 12, paddingBottom: 20, whiteSpace: "nowrap" }}>
-                                            {registers.map((value, index) => (
-                                                <span style={{ padding: 10.1 }} key={index} >
-                                                    {value}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-
+                                <Grid container justifyContent='center' direction="column" alignItems="center" style={{ overflow: "auto" }}>
+                                    <table style={{ overflow: "auto" }}>
+                                        <thead>
+                                            <tr style={{ fontSize: 12, paddingTop: 20, whiteSpace: "nowrap" }}>
+                                                {registerName.map((value, index) => (
+                                                    <th style={{ padding: 5 }} key={index} >
+                                                        {value}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style={{ fontSize: 12, paddingBottom: 20, whiteSpace: "nowrap" }}>
+                                                {registers.map((value, index) => (
+                                                    <td style={{ padding: 10.5 }} key={index} >
+                                                        {value}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </Grid>
                             </Box>
                         </Box>
@@ -247,8 +281,8 @@ export const Codebox = () => {
                             <Box borderRadius={2} {...MemoryProps} >
                                 メモリ状況
                                 <Grid container justifyContent='center' alignItems="center">
-                                    <Grid item xs={15} sm={10}>
-                                        <div style={{ fontSize: 12, padding: "3%", whiteSpace: "nowrap", overflow: "auto" }}>
+                                    <Grid item xs={7} sm={7}>
+                                        <div style={{ fontSize: 12, paddingBottom: "2%", whiteSpace: "nowrap", overflow: "auto" }}>
                                             {memorys.map((value, index) => (
                                                 <span key={index} style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     <span className={index % 16 === 0 ? styles.br : ''}>
@@ -269,24 +303,36 @@ export const Codebox = () => {
                                 <div className={styles.editortop}>
                                     アセンブリエディタ
                                 </div>
-                                <div className={styles.area}>
-                                    <textarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} onBlur={() => setCurrentPos(GetCoursol())}></textarea>
-                                    <textarea id="operate" spellCheck={false} value={operation} onChange={(e) => setOperation(e.target.value)} className={styles.operation}></textarea>
-                                </div>
+                                <Grid container justifyContent={"center"}>
+                                    <Grid item xs={2}>
+                                        <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} onBlur={() => setCurrentPos(GetCoursol())} style={{ width: "90%" }}></RichTextarea>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <RichTextarea id="operate" spellCheck={false} value={operation} onChange={(e) => setOperation(e.target.value)} className={styles.operation} style={{ width: "100%" }}>
+                                            {(v) => {
+                                                return v.split("\n").map((t, i) => (
+                                                    <span key={i} style={{ backgroundColor: i === currentRow ? "yellow" : undefined }}>
+                                                        {t + "\n"}
+                                                    </span>
+                                                ));
+                                            }}
+                                        </RichTextarea>
+                                    </Grid>
+                                </Grid>
                             </Box>
                         </Box>
                         <Grid container justifyContent='center' >
-                            <Box sx={{ p: "1%" }}>
+                            <Box sx={{ p: "1%" }} color="secondary">
                                 <Button variant="outlined" onClick={() => PostALL(operation, registers, memorys)}>
                                     全て実行
                                 </Button>
                             </Box>
-                            <Box sx={{ p: "1%" }}>
+                            <Box sx={{ p: "1%" }} color="secondary">
                                 <Button variant="outlined" onClick={() => LineExecution(currentPos)}>
                                     現在の行を実行
                                 </Button>
                             </Box>
-                            <Box sx={{ p: "1%" }}>
+                            <Box sx={{ p: "1%" }} color="secondary">
                                 <Button variant="outlined" onClick={() => Clear()}>
                                     クリア
                                 </Button>
