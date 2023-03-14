@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Box, Grid, Button } from "@mui/material"
 import axios from "axios"
 import { RichTextarea, CaretPosition } from "rich-textarea";
-
+import { useKeyPressEvent } from 'react-use'
 
 export const Codebox = () => {
     const [operation, setOperation] = useState<string>('');
@@ -14,12 +14,13 @@ export const Codebox = () => {
     const [currentPos, setCurrentPos] = useState<number>(0);
     const [currentRow, setCurrentRow] = useState<number>(-10);
     const [processing, setProcessing] = useState(false);
-    const [display, setDisplay] = useState<string>("");
+    const [displays, setDisplays] = useState<string>("");
     const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
         memory: number[],
         register: number[],
-        success: boolean
+        IsSuccess: boolean,
+        display: string
     }
     const [result, setResult] = useState<resultprops>();
     const baseurl = "https://wazm.azurewebsites.net/asm";
@@ -41,7 +42,7 @@ export const Codebox = () => {
         }
         for (let i = 0; i < fixrows.length; i++) {
             if (Number(fixrows[i]) == next) {
-                Post(fixoperation[i], registers, memorys);
+                Post(fixoperation[i], registers, memorys, displays);
                 return fixoperation[i];
             }
         }
@@ -51,15 +52,17 @@ export const Codebox = () => {
 
 
 
-    async function Post(postnemonic: string, postregister: number[], postmemory: number[]) {
+    async function Post(postnemonic: string, postregister: number[], postmemory: number[], postdisplay: string) {
         console.log(postnemonic)
         console.log(postregister)
         console.log(postmemory)
+        console.log(postdisplay)
         try {
             await axios.post(baseurl, {
                 mnemonic: postnemonic,
                 register: postregister,
-                memory: postmemory
+                memory: postmemory,
+                display: postdisplay
             }).then((response) => {
                 var res = response.data;
                 console.log(res);
@@ -68,7 +71,7 @@ export const Codebox = () => {
                     let prevRip = registers[17];
                     setMemorys(response.data.memory);
                     setRegisters(response.data.register);
-                    setDisplay(response.data.display)
+                    setDisplays(response.data.display)
                     // if (prevRip != response.data.register[17]) {
                     //     SerchRow(response.data.register[17]);
                     //     return
@@ -84,6 +87,7 @@ export const Codebox = () => {
             });
         } catch (error) {
             console.log("eroor");
+            alert("実行時にエラーが生じました。");
         };
     }
     async function PostALL(postnemonic: string, postregister: number[], postmemory: number[]) {
@@ -101,7 +105,8 @@ export const Codebox = () => {
             await axios.post(URL, {
                 mnemonics: postnimonics,
                 register: postregister,
-                memory: postmemory
+                memory: postmemory,
+                display: ""
             }).then((response) => {
                 var res = response.data;
                 console.log(res);
@@ -109,13 +114,14 @@ export const Codebox = () => {
                 if (response.data.isSuccess) {
                     setMemorys(response.data.memory)
                     setRegisters(response.data.register)
-                    setDisplay(response.data.display)
+                    setDisplays(response.data.display)
                 } else {
                     alert("実行時にエラーが生じました。");
                 }
             });
         } catch (error) {
             console.log("eroor");
+            alert("実行時にエラーが生じました。");
         };
     }
 
@@ -126,7 +132,7 @@ export const Codebox = () => {
         setProcessing(true);
         var lines: string[] = operation.split(/\n/);
         setCurrentRow(num);
-        Post(lines[num], registers, memorys)
+        Post(lines[num], registers, memorys, displays)
     }
 
 
@@ -191,6 +197,14 @@ export const Codebox = () => {
         setMemorys(firstMemory);
         setRegisters(newRegister);
     }
+    useKeyPressEvent(
+        () => true,
+        () => {
+          GetCoursol();
+        },
+        () => {
+        }
+      )
 
     useEffect(() => {
         document.getElementById("operate")?.addEventListener('scroll', setScroll)
@@ -244,7 +258,7 @@ export const Codebox = () => {
                                     ディスプレイ
                                 </div>
                                 <div style={{ color: "white", padding: "2%" }}>
-                                    {display}
+                                    {displays}
                                 </div>
                             </Box>
                         </Box>
@@ -305,10 +319,10 @@ export const Codebox = () => {
                                 </div>
                                 <Grid container justifyContent={"center"}>
                                     <Grid item xs={2}>
-                                        <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} onBlur={() => setCurrentPos(GetCoursol())} style={{ width: "90%" }}></RichTextarea>
+                                        <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} style={{ width: "90%" }}></RichTextarea>
                                     </Grid>
                                     <Grid item xs={8}>
-                                        <RichTextarea id="operate" spellCheck={false} value={operation} onChange={(e) => setOperation(e.target.value)} className={styles.operation} style={{ width: "100%" }}>
+                                        <RichTextarea id="operate" spellCheck={false} value={operation} onChange={(e) => setOperation(e.target.value)} className={styles.operation} style={{ width: "100%" }} onBlur={() => setCurrentPos(GetCoursol())}>
                                             {(v) => {
                                                 return v.split("\n").map((t, i) => (
                                                     <span key={i} style={{ backgroundColor: i === currentRow ? "yellow" : undefined }}>
