@@ -163,9 +163,14 @@ export const Codebox = () => {
     }
     function Sumple() {
         const newRegister: number[] = [];
-        for (let l = 0; l < 17; l++) {
+        for (let l = 0; l < 4; l++) {
             newRegister.push(0);
         }
+        newRegister.push(128);
+        for (let l = 0; l < 11; l++) {
+            newRegister.push(0);
+        }
+        newRegister.push(2);
         newRegister.push(1)
         const newMemorys: string[] = [];
         let newCols = "";
