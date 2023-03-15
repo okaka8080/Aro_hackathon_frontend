@@ -1,9 +1,11 @@
-.main {
-}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+.main {}
 
 .area {
     text-align: center;
 }
+
 .editortop {
     font-size: 20px;
     line-height: 30px;
@@ -13,7 +15,7 @@
 
 
 .byte {
-    outline:none;
+    outline: none;
     resize: none;
     font-size: 15px;
     line-height: 20px;
@@ -29,7 +31,7 @@
 
 
 .operation {
-    outline:none;
+    outline: none;
     resize: none;
     font-size: 15px;
     line-height: 20px;
@@ -37,11 +39,28 @@
 }
 
 .br::before {
-	content: "\A" ;
-	white-space: pre ;
+    content: "\A";
+    white-space: pre;
 }
 
-.table{
+.table {
     table-layout: fixed;
-	width: 100%;
+    width: 100%;
+}
+
+.Rock {
+    padding: 0.5%;
+    font-family: 'Cinzel', serif;
+}
+
+.newtable th {
+    /*table内のthに対して*/
+    padding: 2;
+    /*上下左右10pxずつ*/
+}
+
+.newtable td {
+    /*table内のtdに対して*/
+    padding: 1px 8px;
+    /*上下3pxで左右10px*/
 }

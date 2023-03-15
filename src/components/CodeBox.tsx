@@ -15,6 +15,7 @@ export const Codebox = () => {
     const [currentRow, setCurrentRow] = useState<number>(-10);
     const [processing, setProcessing] = useState(false);
     const [displays, setDisplays] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("不明なエラーです");
     const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
         memory: number[],
@@ -80,14 +81,14 @@ export const Codebox = () => {
                     setCurrentRow(-10);
                     setProcessing(false);
                 } else {
-                    alert("実行時にエラーが生じました。");
+                    alert(response.data.error_message);
                     setProcessing(false);
                     setCurrentRow(-10);
                 }
             });
         } catch (error) {
             console.log("eroor");
-            alert("実行時にエラーが生じました。");
+            alert("通信エラーです。");
         };
     }
     async function PostALL(postnemonic: string, postregister: number[], postmemory: number[]) {
@@ -116,12 +117,12 @@ export const Codebox = () => {
                     setRegisters(response.data.register)
                     setDisplays(response.data.display)
                 } else {
-                    alert("実行時にエラーが生じました。");
+                    alert(response.data.error_message);
                 }
             });
         } catch (error) {
             console.log("eroor");
-            alert("実行時にエラーが生じました。");
+            alert("通信エラーです。");
         };
     }
 
@@ -142,7 +143,7 @@ export const Codebox = () => {
         var bytes = "";
         var newrows = 0;
         for (let i: number = 0; i < newOpereteList.length; i++) {
-            if (newOpereteList[i] == "" || newOpereteList[i] == "" ) {
+            if (newOpereteList[i] == "" || newOpereteList[i] == "") {
                 bytes = bytes + "\n";
             } else {
                 newrows++;
@@ -200,11 +201,11 @@ export const Codebox = () => {
     useKeyPressEvent(
         () => true,
         () => {
-          GetCoursol();
+            GetCoursol();
         },
         () => {
         }
-      )
+    )
 
     useEffect(() => {
         document.getElementById("operate")?.addEventListener('scroll', setScroll)
@@ -223,7 +224,7 @@ export const Codebox = () => {
         borderColor: 'text.primary',
         m: 1,
         border: 1,
-        style: { width: '100%', height: '30rem' },
+        style: { width: '100%', height: '33rem' },
     };
     const RegisterProps = {
         bgcolor: '#dcdcdc',
@@ -246,6 +247,12 @@ export const Codebox = () => {
         border: 1,
         style: { width: '100%', height: '6rem' },
     };
+    const HeadProps = {
+        bgcolor: '#dcdcdc',
+        borderColor: 'text.primary',
+        m: 0,
+        style: { width: '100%', height: '2rem' },
+    };
 
     return (
         <main>
@@ -254,17 +261,17 @@ export const Codebox = () => {
                     <Grid item xs={5}>
                         <Box display="flex" justifyContent="center" sx={{ pt: 2, pb: 0 }} >
                             <Box borderRadius={2} {...DisplayProps}>
-                                <div style={{ color: "white" }}>
+                                <div style={{ color: "white" }} className={styles.Rock}>
                                     ディスプレイ
                                 </div>
-                                <div style={{ color: "white", padding: "2%" }}>
+                                <div style={{ color: "white", padding: "2%", }}>
                                     {displays}
                                 </div>
                             </Box>
                         </Box>
                         <Box display="flex" justifyContent="center" sx={{ pt: 0.5, pb: 0 }}>
                             <Box borderRadius={2} {...RegisterProps} >
-                                <div style={{ paddingLeft: 5 }}>
+                                <div style={{ paddingLeft: 5 }} className={styles.Rock}>
                                     レジスタ状況
                                 </div>
                                 <Grid container justifyContent='center' direction="column" alignItems="center" style={{ overflow: "auto" }}>
@@ -293,18 +300,122 @@ export const Codebox = () => {
                         </Box>
                         <Box display="flex" justifyContent="center" sx={{ pt: 0.5, pb: 1 }} >
                             <Box borderRadius={2} {...MemoryProps} >
-                                メモリ状況
+                                <div className={styles.Rock}>
+                                    メモリ状況
+                                </div>
                                 <Grid container justifyContent='center' alignItems="center">
-                                    <Grid item xs={7} sm={7}>
-                                        <div style={{ fontSize: 12, paddingBottom: "2%", whiteSpace: "nowrap", overflow: "auto" }}>
-                                            {memorys.map((value, index) => (
-                                                <span key={index} style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
-                                                    <span className={index % 16 === 0 ? styles.br : ''}>
-                                                        {value}
-                                                    </span>
-                                                </span>
-                                            ))}
-                                        </div>
+                                    <Grid item xs={7} sm={8} style={{overflow: "auto"}}>
+                                        <table style={{fontSize: 10}} className={styles.newtable}>
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" , paddingBlock:"1%"}}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(index < 16) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(15 < index) && (index < 32) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(31 < index) && (index < 48) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(47 < index) && (index < 64) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(63 < index) && (index < 80) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(79 < index) && (index < 96) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(111 < index) && (index < 128) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(127 < index) && (index < 144) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(143 < index) && (index < 160) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(159 < index) && (index < 176) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(175 < index) && (index < 192) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(191 < index) && (index < 208) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(207 < index) && (index < 224) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(223 < index) && (index < 240) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(239 < index) && (index < 256) ? <td>{value}</td> : ""}
+                                                        </>
+                                                    ))}
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </Grid>
 
                                 </Grid>
@@ -314,10 +425,14 @@ export const Codebox = () => {
                     <Grid item xs={5}>
                         <Box display="flex" justifyContent="center" sx={{ pt: 2, pb: 0 }}>
                             <Box borderRadius={2} {...defaultProps} >
-                                <div className={styles.editortop}>
-                                    アセンブリエディタ
-                                </div>
-                                <Grid container justifyContent={"center"}>
+                                <Box borderRadius={2} {...HeadProps} >
+                                    <div className={styles.editortop}>
+                                        <div className={styles.Rock}>
+                                            アセンブリエディタ
+                                        </div>
+                                    </div>
+                                </Box>
+                                <Grid container justifyContent={"center"} paddingTop="0.5%">
                                     <Grid item xs={2}>
                                         <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} style={{ width: "90%" }}></RichTextarea>
                                     </Grid>

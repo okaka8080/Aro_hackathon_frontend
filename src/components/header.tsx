@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Link from 'next/link';
+import styles from "./css/header.module.css";
 import Box from '@mui/material/Box';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
 import Cookies from "js-cookie";
@@ -52,7 +53,9 @@ export const Header = () => {
             <AppBar position="static" color="primary">
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        WAZM
+                        <div className={styles.Header}>
+                            WAZM
+                        </div>
                     </Typography>
                 </Toolbar>
             </AppBar>
