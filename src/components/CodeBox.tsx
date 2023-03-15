@@ -3,7 +3,7 @@ import styles from "./css/terminal.module.css"
 import { useEffect, useState } from "react"
 import { Box, Grid, Button } from "@mui/material"
 import axios from "axios"
-import { RichTextarea, CaretPosition } from "rich-textarea";
+import { RichTextarea } from "rich-textarea";
 import { useKeyPressEvent } from 'react-use'
 
 export const Codebox = () => {
@@ -31,7 +31,8 @@ export const Codebox = () => {
         setOperation("");
         setRip("");
     }
-    function SerchRow(next: number) {
+
+    function SerchRow(next: number) {//未使用関数
         let rows = rip.split("\n");
         let allopereation = operation.split("\n");
         let fixrows = rows.filter(Boolean);
@@ -69,10 +70,6 @@ export const Codebox = () => {
                     setRegisters(response.data.register);
                     setDisplays(response.data.display)
                     setCurrentRsp(response.data.register[4]);
-                    // if (prevRip != response.data.register[17]) {
-                    //     SerchRow(response.data.register[17]);
-                    //     return
-                    // }
                     setCurrentRow(-10);
                     setProcessing(false);
                 } else {
@@ -184,6 +181,7 @@ export const Codebox = () => {
         setMemorys(firstMemory);
         setRegisters(newRegister);
     }
+
     useKeyPressEvent(
         () => true,
         () => {
@@ -349,8 +347,8 @@ export const Codebox = () => {
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(index != (currentRsp - 1)) && (95 < index) && (index < 112)  ? <td>{value}</td> : ""}
-                                                            {(index == (currentRsp - 1)) && (95 < index) && (index < 112)  ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (95 < index) && (index < 112) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (95 < index) && (index < 112) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
@@ -474,7 +472,12 @@ export const Codebox = () => {
                             </Box>
                             <Box sx={{ p: "1%" }} color="secondary">
                                 <Button variant="contained" onClick={() => Clear()}>
-                                    クリア
+                                    テキストクリア
+                                </Button>
+                            </Box>
+                            <Box sx={{ p: "1%" }} color="secondary">
+                                <Button variant="contained" onClick={() => Sumple()}>
+                                    レジスタクリア
                                 </Button>
                             </Box>
                         </Grid>
