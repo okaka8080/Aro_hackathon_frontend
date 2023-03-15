@@ -15,6 +15,7 @@ export const Codebox = () => {
     const [currentRow, setCurrentRow] = useState<number>(-10);
     const [processing, setProcessing] = useState(false);
     const [displays, setDisplays] = useState<string>("");
+    const [currentRsp, setCurrentRsp] = useState<number>(0);
     const [errorMessage, setErrorMessage] = useState<string>("不明なエラーです");
     const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
@@ -73,6 +74,7 @@ export const Codebox = () => {
                     setMemorys(response.data.memory);
                     setRegisters(response.data.register);
                     setDisplays(response.data.display)
+                    setCurrentRsp(response.data.register[4]);
                     // if (prevRip != response.data.register[17]) {
                     //     SerchRow(response.data.register[17]);
                     //     return
@@ -116,8 +118,8 @@ export const Codebox = () => {
                     setMemorys(response.data.memory)
                     setRegisters(response.data.register)
                     setDisplays(response.data.display)
+                    setCurrentRsp(response.data.register[4]);
                     console.log(displays)
-
                 } else {
                     alert(response.data.error_message);
                 }
@@ -317,106 +319,128 @@ export const Codebox = () => {
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto", paddingBlock: "1%" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(index < 16) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (index < 16) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (index < 16) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(15 < index) && (index < 32) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (15 < index) && (index < 32) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (15 < index) && (index < 32) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(31 < index) && (index < 48) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (31 < index) && (index < 48) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (31 < index) && (index < 48) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(47 < index) && (index < 64) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (47 < index) && (index < 64) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (47 < index) && (index < 64) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(63 < index) && (index < 80) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (63 < index) && (index < 80) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (63 < index) && (index < 80) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(79 < index) && (index < 96) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (79 < index) && (index < 96) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (79 < index) && (index < 96) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(111 < index) && (index < 128) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (95 < index) && (index < 112)  ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (95 < index) && (index < 112)  ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(127 < index) && (index < 144) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (111 < index) && (index < 128) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (111 < index) && (index < 128) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(143 < index) && (index < 160) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (127 < index) && (index < 144) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (127 < index) && (index < 144) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(159 < index) && (index < 176) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (143 < index) && (index < 160) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (143 < index) && (index < 160) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(175 < index) && (index < 192) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (159 < index) && (index < 176) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (159 < index) && (index < 176) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(191 < index) && (index < 208) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (175 < index) && (index < 192) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (175 < index) && (index < 192) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(207 < index) && (index < 224) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (191 < index) && (index < 208) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (191 < index) && (index < 208) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(223 < index) && (index < 240) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (207 < index) && (index < 224) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (207 < index) && (index < 224) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
                                                     ))}
                                                 </tr>
                                                 <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
-                                                            {(239 < index) && (index < 256) ? <td>{value}</td> : ""}
+                                                            {(index != (currentRsp - 1)) && (223 < index) && (index < 240) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (223 < index) && (index < 240) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}
                                                         </>
+                                                    ))}
+                                                </tr>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" }}>
+                                                    {memorys.map((value, index) => (
+                                                        <>
+                                                            {(index != (currentRsp - 1)) && (239 < index) && (index < 256) ? <td>{value}</td> : ""}
+                                                            {(index == (currentRsp - 1)) && (239 < index) && (index < 256) ? <td style={{ backgroundColor: "yellow" }}>{value}</td> : ""}                                                        </>
                                                     ))}
                                                 </tr>
                                             </tbody>
