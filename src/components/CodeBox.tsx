@@ -15,7 +15,7 @@ export const Codebox = () => {
     const [currentRow, setCurrentRow] = useState<number>(-10);
     const [processing, setProcessing] = useState(false);
     const [displays, setDisplays] = useState<string>("");
-    const [currentRsp, setCurrentRsp] = useState<number>(0);
+    const [currentRsp, setCurrentRsp] = useState<number>(128);
     const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
         memory: number[],
