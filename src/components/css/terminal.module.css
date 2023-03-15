@@ -6,10 +6,16 @@
     text-align: center;
 }
 
+.displaytext {
+    white-space: pre-wrap;
+    overflow: "auto" 
+}
+
+
 .editortop {
     font-size: 20px;
     line-height: 30px;
-    color: #696969;
+    color: whitesmoke;
     padding: 0.5%;
 }
 
