@@ -16,7 +16,6 @@ export const Codebox = () => {
     const [processing, setProcessing] = useState(false);
     const [displays, setDisplays] = useState<string>("");
     const [currentRsp, setCurrentRsp] = useState<number>(0);
-    const [errorMessage, setErrorMessage] = useState<string>("不明なエラーです");
     const registerName = ["rax", "rbx", "rcx", "rdx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rflags", "rip"]
     type resultprops = {
         memory: number[],
@@ -55,10 +54,6 @@ export const Codebox = () => {
 
 
     async function Post(postnemonic: string, postregister: number[], postmemory: number[], postdisplay: string) {
-        console.log(postnemonic)
-        console.log(postregister)
-        console.log(postmemory)
-        console.log(postdisplay)
         try {
             await axios.post(baseurl, {
                 mnemonic: postnemonic,
@@ -67,7 +62,6 @@ export const Codebox = () => {
                 display: postdisplay
             }).then((response) => {
                 var res = response.data;
-                console.log(res);
                 setResult(response.data);
                 if (response.data.isSuccess) {
                     let prevRip = registers[17];
@@ -79,7 +73,6 @@ export const Codebox = () => {
                     //     SerchRow(response.data.register[17]);
                     //     return
                     // }
-                    console.log("breack")
                     setCurrentRow(-10);
                     setProcessing(false);
                 } else {
@@ -89,7 +82,6 @@ export const Codebox = () => {
                 }
             });
         } catch (error) {
-            console.log("eroor");
             alert("通信エラーです。");
         };
     }
@@ -100,10 +92,6 @@ export const Codebox = () => {
             postnimonics = [postnemonic];
         }
         postnimonics = postnimonics.filter(Boolean);
-
-        console.log(postnimonics)
-        console.log(postregister)
-        console.log(postmemory)
         try {
             await axios.post(URL, {
                 mnemonics: postnimonics,
@@ -112,20 +100,17 @@ export const Codebox = () => {
                 display: ""
             }).then((response) => {
                 var res = response.data;
-                console.log(res);
                 setResult(response.data);
                 if (response.data.isSuccess) {
                     setMemorys(response.data.memory)
                     setRegisters(response.data.register)
                     setDisplays(response.data.display)
                     setCurrentRsp(response.data.register[4]);
-                    console.log(displays)
                 } else {
                     alert(response.data.error_message);
                 }
             });
         } catch (error) {
-            console.log("eroor");
             alert("通信エラーです。");
         };
     }
@@ -166,7 +151,6 @@ export const Codebox = () => {
                 let position = target.selectionStart as number;
                 let beforetext = operation.substring(0, position);
                 let colList = beforetext.split("\n");
-                console.log(colList.length)
                 return (colList.length - 1)
             }
         }
@@ -181,7 +165,6 @@ export const Codebox = () => {
         document.getElementById("bytes")?.scrollTo({ top: document.getElementById("operate")?.scrollTop });
     }
     function Sumple() {
-        console.log("loaded");
         const newRegister: number[] = [];
         for (let l = 0; l < 17; l++) {
             newRegister.push(0);
@@ -198,7 +181,6 @@ export const Codebox = () => {
             newMemorys.push(newCols);
             newCols = "";
         }
-        console.log(newMemorys);
         setMemorys(firstMemory);
         setRegisters(newRegister);
     }
@@ -463,7 +445,7 @@ export const Codebox = () => {
                                 </Box>
                                 <Grid container justifyContent={"center"} paddingTop="3%">
                                     <Grid item xs={2}>
-                                        <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} style={{ width: "90%" }}></RichTextarea>
+                                        <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} style={{ width: "90%" }}></RichTextarea>
                                     </Grid>
                                     <Grid item xs={8}>
                                         <RichTextarea id="operate" spellCheck={false} value={operation} onChange={(e) => setOperation(e.target.value)} className={styles.operation} style={{ width: "100%" }} onBlur={() => setCurrentPos(GetCoursol())}>
