@@ -116,6 +116,8 @@ export const Codebox = () => {
                     setMemorys(response.data.memory)
                     setRegisters(response.data.register)
                     setDisplays(response.data.display)
+                    console.log(displays)
+
                 } else {
                     alert(response.data.error_message);
                 }
@@ -220,7 +222,7 @@ export const Codebox = () => {
     }, [])
 
     const defaultProps = {
-        bgcolor: '#f5f5f5',
+        bgcolor: '#dcdcdc',
         borderColor: 'text.primary',
         m: 1,
         border: 1,
@@ -248,25 +250,28 @@ export const Codebox = () => {
         style: { width: '100%', height: '6rem' },
     };
     const HeadProps = {
-        bgcolor: '#dcdcdc',
+        bgcolor: '#808080',
         borderColor: 'text.primary',
         m: 0,
-        style: { width: '100%', height: '2rem' },
+        style: { width: '100%', height: '3rem' },
     };
 
     return (
         <main>
             <div className={styles.main}>
                 <Grid container justifyContent='center'>
-                    <Grid item xs={5}>
+                    <Grid item xs={5} >
                         <Box display="flex" justifyContent="center" sx={{ pt: 2, pb: 0 }} >
                             <Box borderRadius={2} {...DisplayProps}>
                                 <div style={{ color: "white" }} className={styles.Rock}>
                                     ディスプレイ
                                 </div>
-                                <div style={{ color: "white", padding: "2%", }}>
-                                    {displays}
-                                </div>
+                                <Grid container direction="column" style={{ overflow: "auto" }}>
+                                    <div style={{ color: "white", padding: "2%", whiteSpace: "pre-wrap", overflow: "auto", height: "2.5rem" }}>
+                                        {displays}
+                                    </div>
+                                </Grid>
+
                             </Box>
                         </Box>
                         <Box display="flex" justifyContent="center" sx={{ pt: 0.5, pb: 0 }}>
@@ -304,12 +309,12 @@ export const Codebox = () => {
                                     メモリ状況
                                 </div>
                                 <Grid container justifyContent='center' alignItems="center">
-                                    <Grid item xs={7} sm={8} style={{overflow: "auto"}}>
-                                        <table style={{fontSize: 10}} className={styles.newtable}>
+                                    <Grid item xs={7} sm={8} style={{ overflow: "auto" }}>
+                                        <table style={{ fontSize: 10 }} className={styles.newtable}>
                                             <thead>
                                             </thead>
                                             <tbody>
-                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto" , paddingBlock:"1%"}}>
+                                                <tr style={{ padding: "2%", textAlign: "center", margin: "auto", paddingBlock: "1%" }}>
                                                     {memorys.map((value, index) => (
                                                         <>
                                                             {(index < 16) ? <td>{value}</td> : ""}
@@ -432,7 +437,7 @@ export const Codebox = () => {
                                         </div>
                                     </div>
                                 </Box>
-                                <Grid container justifyContent={"center"} paddingTop="0.5%">
+                                <Grid container justifyContent={"center"} paddingTop="3%">
                                     <Grid item xs={2}>
                                         <RichTextarea id="bytes" spellCheck={false} value={rip} className={styles.byte} onChange={(e) => console.log("chaged")} style={{ width: "90%" }}></RichTextarea>
                                     </Grid>
@@ -452,17 +457,17 @@ export const Codebox = () => {
                         </Box>
                         <Grid container justifyContent='center' >
                             <Box sx={{ p: "1%" }} color="secondary">
-                                <Button variant="outlined" onClick={() => PostALL(operation, registers, memorys)}>
+                                <Button variant="contained" onClick={() => PostALL(operation, registers, memorys)}>
                                     全て実行
                                 </Button>
                             </Box>
                             <Box sx={{ p: "1%" }} color="secondary">
-                                <Button variant="outlined" onClick={() => LineExecution(currentPos)}>
+                                <Button variant="contained" onClick={() => LineExecution(currentPos)}>
                                     現在の行を実行
                                 </Button>
                             </Box>
                             <Box sx={{ p: "1%" }} color="secondary">
-                                <Button variant="outlined" onClick={() => Clear()}>
+                                <Button variant="contained" onClick={() => Clear()}>
                                     クリア
                                 </Button>
                             </Box>
@@ -470,6 +475,6 @@ export const Codebox = () => {
                     </Grid>
                 </Grid>
             </div>
-        </main>
+        </main >
     )
 }
